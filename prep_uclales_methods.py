@@ -123,7 +123,7 @@ def make_backrad_in_file(home_dir,date,IC,z):
     ozone = pozon(pres)
     backrad_output = np.stack((pres[::-1],temp[::-1],watr[::-1],ozone[::-1],np.zeros(len(temp))),axis=-1)
     np.savetxt('backrad_in',backrad_output,fmt='%15.3f %8.2f %12.6f %15.10f %8.3f',header=str(tsrf)+' '+str(len(temp)),comments='')
-def write_NAMELIST(nzp,timmax,runtype,frqanl,filprf,hfilin,strtim,dthcon,drtcon,th00,umean,vmean,div,fr0,fr1,\
+def write_NAMELIST(nzp,timmax,runtype,frqanl,filprf,hfilin,strtim,dthcon,drtcon,th00,umean,vmean,div,fr0,fr1,xka\
                    nxp=100,nyp=100,igrdtyp=-3,deltax=35.,deltay=35.,deltaz=10.,\
                    nxpart='.true.',dtlong=2.,distim=100.,level=2,CCN=55.0e6,prndtl=-0.33333,\
                    ssam_intvl=15.,savg_intvl=900.,corflg='.true.',iradtyp=2,ubmin=-0.25,):
@@ -131,6 +131,7 @@ def write_NAMELIST(nzp,timmax,runtype,frqanl,filprf,hfilin,strtim,dthcon,drtcon,
     Default variables are at the end of the input vars
     05/29/18: fixing radiation type to 2, dynamic input for fr0 and fr1
 	      subsidence cooling added to keep the tropospheric temperature profile constant
+    06/28/18: including xka as input in NAMELIST
     '''
     with codecs.open('NAMELIST','w',encoding='ascii') as f:
         f.write('&model\n')
@@ -164,9 +165,10 @@ def write_NAMELIST(nzp,timmax,runtype,frqanl,filprf,hfilin,strtim,dthcon,drtcon,
         f.write(' umean = '+str(umean)+'\n')
         f.write(' vmean = '+str(vmean)+'\n')
         f.write(' div = '+str(np.abs(div))+'\n')
-	f.write(' fr0 = '+str(fr0)+'\n')
-	f.write(' fr1 = '+str(fr1)+'\n')        
-	f.write('/\n')
+    	f.write(' fr0 = '+str(fr0)+'\n')
+    	f.write(' fr1 = '+str(fr1)+'\n')
+        f.write(' xka = '+str(xka)+'\n')        
+    	f.write('/\n')
         f.close()
 
 def SEND_ALERT_EMAIL(caseName,timePeriod):

@@ -36,10 +36,10 @@ def main(argv):
     prep_les.write_NAMELIST(nzp=len(zm),timmax=18000.,runtype='INITIAL',frqanl=3600.,\
                    filprf=caseName,hfilin=caseName+'.rst',strtim=float(date.dayofyear),\
                    dthcon=IC['SHF'],drtcon=IC['LHF'],\
-                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'])
+                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka'])
     '''Run UCLALES'''
-    os.system('ln -s /home/elw014/uclales/build/uclales .')
-    os.system('ln -s /home/elw014/uclales/bin/datafiles .')
+    os.system('ln -s /home/elw014/radtyp2/uclales/build/uclales .')
+    os.system('ln -s /home/elw014/radtyp2/uclales/bin/datafiles .')
     os.system('mpiexec -n 8 ./uclales > log')
     
     '''Hour 3 - 4, saving minute data'''
@@ -47,14 +47,14 @@ def main(argv):
     prep_les.write_NAMELIST(nzp=len(zm),timmax=21600.,runtype='HISTORY',frqanl=60.,\
                    filprf=caseName,hfilin=caseName+'.rst',strtim=float(date.dayofyear),\
                    dthcon=IC['SHF'],drtcon=IC['LHF'],\
-                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'])
+                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka'])
     os.system('cp ../hr_1_3_60min_with_spinup/zm_grid_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/zt_grid_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/sound_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/backrad_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/*.rst .')
-    os.system('ln -s /home/elw014/uclales/build/uclales .')
-    os.system('ln -s /home/elw014/uclales/bin/datafiles .')
+    os.system('ln -s /home/elw014/radtyp2/uclales/build/uclales .')
+    os.system('ln -s /home/elw014/radtyp2/uclales/bin/datafiles .')
     os.system('mpiexec -n 8 ./uclales > log')
     prep_les.SEND_ALERT_EMAIL(caseName, ' Hour 3 - 4')
     
@@ -63,14 +63,14 @@ def main(argv):
     prep_les.write_NAMELIST(nzp=len(zm),timmax=72000.,runtype='HISTORY',frqanl=3600.,\
                    filprf=caseName,hfilin=caseName+'.rst',strtim=float(date.dayofyear),\
                    dthcon=IC['SHF'],drtcon=IC['LHF'],\
-                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'])
+                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka'])
     os.system('cp ../hr_3_4_1min/zm_grid_in .')
     os.system('cp ../hr_3_4_1min/zt_grid_in .')
     os.system('cp ../hr_3_4_1min/sound_in .')
     os.system('cp ../hr_3_4_1min/backrad_in .')
     os.system('cp ../hr_3_4_1min/*.rst .')
-    os.system('ln -s /home/elw014/uclales/build/uclales .')
-    os.system('ln -s /home/elw014/uclales/bin/datafiles .')
+    os.system('ln -s /home/elw014/radtyp2/uclales/build/uclales .')
+    os.system('ln -s /home/elw014/radtyp2/uclales/bin/datafiles .')
     os.system('mpiexec -n 8 ./uclales > log')
     prep_les.SEND_ALERT_EMAIL(caseName, ' Hour 4 - 18')
 if __name__ == "__main__":
