@@ -36,7 +36,7 @@ def main(argv):
     prep_les.write_NAMELIST(nzp=len(zm),timmax=18000.,runtype='INITIAL',frqanl=3600.,\
                    filprf=caseName,hfilin=caseName+'.rst',strtim=float(date.dayofyear),\
                    dthcon=IC['SHF'],drtcon=IC['LHF'],\
-                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka'])
+                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka_bestfit'])
     '''Run UCLALES'''
     os.system('ln -s /home/elw014/radtyp2/uclales/build/uclales .')
     os.system('ln -s /home/elw014/radtyp2/uclales/bin/datafiles .')
@@ -47,7 +47,7 @@ def main(argv):
     prep_les.write_NAMELIST(nzp=len(zm),timmax=21600.,runtype='HISTORY',frqanl=60.,\
                    filprf=caseName,hfilin=caseName+'.rst',strtim=float(date.dayofyear),\
                    dthcon=IC['SHF'],drtcon=IC['LHF'],\
-                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka'])
+                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka_bestfit'])
     os.system('cp ../hr_1_3_60min_with_spinup/zm_grid_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/zt_grid_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/sound_in .')
@@ -63,7 +63,7 @@ def main(argv):
     prep_les.write_NAMELIST(nzp=len(zm),timmax=72000.,runtype='HISTORY',frqanl=3600.,\
                    filprf=caseName,hfilin=caseName+'.rst',strtim=float(date.dayofyear),\
                    dthcon=IC['SHF'],drtcon=IC['LHF'],\
-                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka'])
+                   th00=IC['eq_thetalBL'],umean=uwind.mean(),vmean=vwind.mean(),div=IC['D_SEAarea'],fr0=IC['F0'],fr1=IC['F1'],xka=IC['xka_bestfit'])
     os.system('cp ../hr_3_4_1min/zm_grid_in .')
     os.system('cp ../hr_3_4_1min/zt_grid_in .')
     os.system('cp ../hr_3_4_1min/sound_in .')
