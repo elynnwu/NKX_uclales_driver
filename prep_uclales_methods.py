@@ -78,12 +78,15 @@ def temperature_above_inv(thetaL_BL,dthetaL,z,zi):
     for i in range(len(z)):
         thetaL_above[i] = thetaL_BL+dthetaL+(z[i]-zi)**(1./3.)
     return thetaL_above
+def var_above_inv(var_inv,var_top,z):
+    p = interpolate.interp1d
 def make_sound_in_file(home_dir,date):
     sounding = pd.read_csv(home_dir+'NKX_sounding/72293_'+date.strftime('%Y_%m_%d')+'_12Z.csv')
-    IC = pd.read_csv(home_dir+'NKX_sounding/FinalTable.csv',index_col=0,parse_dates=True).loc[date]
+    IC = pd.read_csv(home_dir+'NKX_sounding/SelectionTable.csv',index_col=0,parse_dates=True).loc[date]
     '''Get vertical coordinates'''
     z_BL = sounding['HGHT [m]'][(sounding['HGHT [m]']>137.) & (sounding['HGHT [m]']<IC['z_inv_base'])]
-    z_above = sounding['HGHT [m]'][(sounding['HGHT [m]']>=IC['z_inv_base']) & (sounding['HGHT [m]']<3000.)]
+    # z_above = sounding['HGHT [m]'][(sounding['HGHT [m]']>=IC['z_inv_base']) & (sounding['HGHT [m]']<3000.)]
+    z_above = np.linspace(IC['z_inv_base'],3000.,100) #make 100 points between IBH and 3km
     z = np.array([0.] + list(z_BL) + [IC['z_inv_base']-1] + list(z_above))
     '''Idealize the sounding'''
     thetaL_above = temperature_above_inv(IC['eq_thetalBL'],IC['eq_dthetal'],z[z>=IC['z_inv_base']],IC['z_inv_base'])
@@ -92,14 +95,14 @@ def make_sound_in_file(home_dir,date):
     qt[z<IC['z_inv_base']] = IC['eq_qtBL']
     '''Get wind component'''
     usounding = -(sounding['SKNT [knot]']*0.514)*np.sin(sounding['DRCT [deg]']*np.pi/180.)
+    f_usounding = f = interp1d(sounding['HGHT [m]'],usounding) #linear interpolation of u-wind
     vsounding = -(sounding['SKNT [knot]']*0.514)*np.cos(sounding['DRCT [deg]']*np.pi/180.)
+    f_vsounding = f = interp1d(sounding['HGHT [m]'],vsounding) #linear interpolation of u-wind
     fz = z<3000.
-    uwind = np.array([0.]+list(usounding[(sounding['HGHT [m]']>137.) & (sounding['HGHT [m]']<=IC['z_inv_base'])])+\
-                    list(usounding[(sounding['HGHT [m]']>=IC['z_inv_base']) & (sounding['HGHT [m]']<3000.)]))
-    vwind = np.array([0.]+list(vsounding[(sounding['HGHT [m]']>137.) & (sounding['HGHT [m]']<=IC['z_inv_base'])])+\
-                    list(vsounding[(sounding['HGHT [m]']>=IC['z_inv_base']) & (sounding['HGHT [m]']<3000.)]))
+    uwind = np.array([0.]+list(f_usounding(z[1:])))
+    vwind = np.array([0.]+list(f_vsounding(z[1:])))
     output = np.stack((z,tl,qt,uwind,vwind),axis=-1)
-    output[0,0] = IC['PSFC']/100.
+    output[0,0] = IC['seapressure_dailymean']/100.
     np.savetxt('sound_in',output,fmt='%10.3f')
     return IC, uwind, vwind, z
 def make_backrad_in_file(home_dir,date,IC,z):
@@ -108,11 +111,11 @@ def make_backrad_in_file(home_dir,date,IC,z):
     temp = sounding['TEMP [C]'].dropna().as_matrix()+273.15
     pres = sounding['PRES [hPa]'].dropna().as_matrix()
     p = interpolate.interp1d(pres[0:2],temp[0:2],fill_value='extrapolate')
-    tsrf = p(IC['PSFC']/100.) #extrapolate to get surface temperature
+    tsrf = p(IC['seapressure_dailymean']/100.) #extrapolate to get surface temperature
     i_pinv = np.where(z==IC['z_inv_base'])[0][0]
     i_3km = np.where(z<3000.)[0][-1]
     temp = np.array([tsrf.tolist()]+list(temp))
-    pres = np.array([IC['PSFC']/100.]+list(pres))
+    pres = np.array([IC['seapressure_dailymean']/100.]+list(pres))
     watr = np.array(list(IC['eq_qtBL']*np.ones(i_pinv+1)) + \
                     list((IC['eq_qtBL']+IC['eq_dqt'])*np.ones(i_3km-i_pinv)) + \
                     list(sounding['MIXR [g/kg]'][i_3km:]))/1000.
@@ -123,7 +126,7 @@ def make_backrad_in_file(home_dir,date,IC,z):
     ozone = pozon(pres)
     backrad_output = np.stack((pres[::-1],temp[::-1],watr[::-1],ozone[::-1],np.zeros(len(temp))),axis=-1)
     np.savetxt('backrad_in',backrad_output,fmt='%15.3f %8.2f %12.6f %15.10f %8.3f',header=str(tsrf)+' '+str(len(temp)),comments='')
-def write_NAMELIST(nzp,timmax,runtype,frqanl,filprf,hfilin,strtim,dthcon,drtcon,th00,umean,vmean,div,fr0,fr1,xka\
+def write_NAMELIST(nzp,timmax,runtype,frqanl,filprf,hfilin,strtim,dthcon,drtcon,th00,umean,vmean,div,fr0,fr1,xka,\
                    nxp=100,nyp=100,igrdtyp=-3,deltax=35.,deltay=35.,deltaz=10.,\
                    nxpart='.true.',dtlong=2.,distim=100.,level=2,CCN=55.0e6,prndtl=-0.33333,\
                    ssam_intvl=15.,savg_intvl=900.,corflg='.true.',iradtyp=2,ubmin=-0.25,):
