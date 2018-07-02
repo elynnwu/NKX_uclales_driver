@@ -27,10 +27,11 @@ def main(argv):
     os.chdir(home_dir+'uclales_output/'+caseName+'/hr_1_3_60min_with_spinup')
     '''Make sound_in file'''
     IC, uwind, vwind, z = prep_les.make_sound_in_file(home_dir,date)
-    '''Make backrad_in file'''
-    prep_les.make_backrad_in_file(home_dir,date,IC,z)
+    '''Make backrad_in file''' 
+    ### no need for backrad_in file for rad type 2
+    # prep_les.make_backrad_in_file(home_dir,date,IC,z)
     '''Make zm_grid and zt_grid files'''
-    domain_H = np.max([IC['z_inv_base']*2,1000.])
+    domain_H = np.max([IC['z_inv_base']*3,1500.])
     zm, zt = prep_les.write_z_grid_relax_transition(IC['z_inv_base'],domain_H)
     '''Make NAMELIST'''
     prep_les.write_NAMELIST(nzp=len(zm),timmax=18000.,runtype='INITIAL',frqanl=3600.,\
@@ -51,7 +52,7 @@ def main(argv):
     os.system('cp ../hr_1_3_60min_with_spinup/zm_grid_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/zt_grid_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/sound_in .')
-    os.system('cp ../hr_1_3_60min_with_spinup/backrad_in .')
+    # os.system('cp ../hr_1_3_60min_with_spinup/backrad_in .')
     os.system('cp ../hr_1_3_60min_with_spinup/*.rst .')
     os.system('ln -s /home/elw014/radtyp2/uclales/build/uclales .')
     os.system('ln -s /home/elw014/radtyp2/uclales/bin/datafiles .')
@@ -67,7 +68,7 @@ def main(argv):
     os.system('cp ../hr_3_4_1min/zm_grid_in .')
     os.system('cp ../hr_3_4_1min/zt_grid_in .')
     os.system('cp ../hr_3_4_1min/sound_in .')
-    os.system('cp ../hr_3_4_1min/backrad_in .')
+    # os.system('cp ../hr_3_4_1min/backrad_in .')
     os.system('cp ../hr_3_4_1min/*.rst .')
     os.system('ln -s /home/elw014/radtyp2/uclales/build/uclales .')
     os.system('ln -s /home/elw014/radtyp2/uclales/bin/datafiles .')

@@ -95,9 +95,9 @@ def make_sound_in_file(home_dir,date):
     qt[z<IC['z_inv_base']] = IC['eq_qtBL']
     '''Get wind component'''
     usounding = -(sounding['SKNT [knot]']*0.514)*np.sin(sounding['DRCT [deg]']*np.pi/180.)
-    f_usounding = f = interp1d(sounding['HGHT [m]'],usounding) #linear interpolation of u-wind
+    f_usounding = f = interpolate.interp1d(sounding['HGHT [m]'],usounding) #linear interpolation of u-wind
     vsounding = -(sounding['SKNT [knot]']*0.514)*np.cos(sounding['DRCT [deg]']*np.pi/180.)
-    f_vsounding = f = interp1d(sounding['HGHT [m]'],vsounding) #linear interpolation of u-wind
+    f_vsounding = f = interpolate.interp1d(sounding['HGHT [m]'],vsounding) #linear interpolation of u-wind
     fz = z<3000.
     uwind = np.array([0.]+list(f_usounding(z[1:])))
     vwind = np.array([0.]+list(f_vsounding(z[1:])))
